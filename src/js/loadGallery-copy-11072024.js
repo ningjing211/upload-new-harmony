@@ -263,7 +263,7 @@ $(document).ready(function () {
                     const $img = $('<img>').attr({
                         src: placeholderPath,
                         alt: 'Placeholder'
-                    }).css({ width: '150px', margin: '10px', opacity: 0.5 });
+                    }).css({ width: '150px', margin: '10px', opacity: 1 });
     
                     const $caption = $('<p>').addClass('caption').html(`${group.index}.${i} <br> no image yet`);
                     $imgDiv.append($img).append($caption);
@@ -302,7 +302,7 @@ $(document).ready(function () {
             const $img = $('<img>').attr({
                 src: placeholderPath,
                 alt: `no image yet`
-            }).css({ width: '150px', margin: '10px', opacity: 0.5 });
+            }).css({ width: '150px', margin: '10px', opacity: 1 });
     
             const $caption = $('<p>').addClass('caption').html(`${group.index}.${placeholderIndex + 1} <br> no image yet`);
             
