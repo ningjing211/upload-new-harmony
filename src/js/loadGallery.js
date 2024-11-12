@@ -308,7 +308,7 @@ $(document).ready(function () {
                     const $img = $('<img>').attr({
                         src: placeholderPath,
                         alt: 'Placeholder'
-                    }).css({ width: '150px', margin: '10px', opacity: 0.5 });
+                    }).css({ width: '150px', margin: '10px', opacity: 1 });
     
                     const $caption = $('<p>').addClass('caption').html(`${group.index}.${i} <br> no image yet`);
                     $imgDiv.append($img).append($caption);
@@ -346,7 +346,7 @@ $(document).ready(function () {
             const $img = $('<img>').attr({
                 src: placeholderPath,
                 alt: `no image yet`
-            }).css({ width: '150px', margin: '10px', opacity: 0.5 });
+            }).css({ width: '150px', margin: '10px', opacity: 1 });
     
             const $caption = $('<p>').addClass('caption').html(`${group.index}.${placeholderIndex + 1} <br> no image yet`);
             
@@ -453,6 +453,8 @@ $(document).ready(function () {
 
     async function uploadImage(folderName, index, file, $imgElement) {
         console.log('uploadImage 執行:', folderName, index, file, $imgElement);
+        const fileName = Number(index) + 1;
+        console.log('fn', fileName);
         return new Promise((resolve, reject) => {
             const formData = new FormData();
             formData.append('image', file);
@@ -465,7 +467,11 @@ $(document).ready(function () {
                 contentType: false,
                 success: function (response) {
                     console.log(`Image uploaded successfully for ${folderName}, index ${index}`);
-                    $imgElement.attr('src', response.path); // 更新圖片 src
+                    $imgElement.attr('src', response.path);
+                    $imgElement.attr('alt', `${fileName}.jpg`); // 更新圖片 src
+                    const $caption = $imgElement.siblings('.caption');
+                    const existingText = $caption.contents().first().text().trim(); // 取得 "1.3"
+                    $caption.html(`${existingText}<br>${fileName}.jpg`); // 保留格式並更新圖片名稱
                     resolve(response); // 成功後 resolve
                 },
                 error: function (err) {
