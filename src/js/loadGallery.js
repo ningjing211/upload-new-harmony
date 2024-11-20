@@ -3,7 +3,6 @@ $(document).ready(function () {
     const expectedImageCount = 20; // 每個資料夾預期有20張圖片
 
     function loadGallery() {
-        console.log('loadGallery');
         $.ajax({
             url: '/images-order',
             method: 'GET',
@@ -86,8 +85,31 @@ $(document).ready(function () {
     
         $.each(data, function (index, group) {
             
+            // const $groupDiv = $('<div>').addClass('group');
+            // $groupDiv.append(`<h3 class="group-name">Group ${group.index} - ${group.folderName}</h3>`);
+
             const $groupDiv = $('<div>').addClass('group');
-            $groupDiv.append(`<h3>Group ${group.index} - ${group.folderName}</h3>`);
+
+            // 可編輯 Group 名稱的區域
+            const $groupNameInput = $('<input>')
+                .attr('type', 'text')
+                .addClass('group-name-input')
+                .val(`${group.folderName}`)
+                .css({ display: 'none' }); // 初始隱藏
+
+            const $groupNameText = $(`<h3 class="group-name">Group ${group.index} - ${group.folderName}</h3>`);
+
+            const $editButton = $('<button>').text('編輯').on('click', function () {
+                $groupNameText.hide();
+                $groupNameInput.show().focus();
+            });
+
+            const $saveButton = $('<button>').text('保存').on('click', function () {
+                const newName = $groupNameInput.val();
+                updateGroupName(group.folderName, newName); // 更新 Group 名稱的函數
+                $groupNameText.text(newName).show();
+                $groupNameInput.hide();
+            });
     
             const coverImage = group.files.find(file => file.isTitle);
             if (coverImage) {
@@ -318,9 +340,27 @@ $(document).ready(function () {
                 $imageContainer.append($imgDiv);
             }
     
-    
+            $groupDiv.append($groupNameText, $groupNameInput, $editButton, $saveButton);
             $groupDiv.append($imageContainer);
             $galleryContainer.append($groupDiv);
+        });
+    }
+
+    function updateGroupName(oldFolderName, newFolderName) {
+        console.log('folderName, newName', oldFolderName, newFolderName);
+        $.ajax({
+            url: '/update-group-name',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ oldFolderName, newFolderName }),
+            success: function () {
+                alert('Group 名稱更新成功');
+                loadGallery(); // 重新加載畫廊顯示更新
+            },
+            error: function (err) {
+                console.error('更新 Group 名稱失敗:', err);
+                alert('更新 Group 名稱失敗');
+            }
         });
     }
     
@@ -341,14 +381,49 @@ $(document).ready(function () {
         const placeholdersToAdd = Math.min(count, 20 - existingItemsCount);
         for (let i = 0; i < placeholdersToAdd; i++) {
             const placeholderIndex = existingItemsCount + i; // 計算新的 placeholder 索引
+            
+            // 定義上傳目標資料夾
+            const targetFolder = `/uploads/${group.folderName}`;
+            console.log('要上傳的資料夾為:', targetFolder);
+            // 檢查 targetFolder 是否存在，若不存在則創建（在前端執行會受到限制，實際應該在伺服器端執行）
+            $.ajax({
+                url: `/create-folder`,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ folderName: group.folderName }),
+                success: function () {
+                    console.log('資料夾檢查/創建成功');
+                },
+                error: function (err) {
+                    console.error('資料夾檢查/創建失敗', err);
+                }
+            });
+
+            // 請求複製 upload.jpg 到目標資料夾
+            $.ajax({
+                url: `/copy-image`,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    folderName: `${targetFolder}`,
+                    newFileName: `${placeholderIndex + 1}`
+                }),
+                success: function () {
+                    console.log(`成功複製 upload.jpg 到 ${targetFolder}/${placeholderIndex + 1}.jpg`);
+                },
+                error: function (err) {
+                    console.error(`複製 upload.jpg 到 ${targetFolder}/${placeholderIndex + 1}.jpg 失敗`, err);
+                }
+            });
+
             const $imgDiv = $('<div>').addClass('imageItem');
             
             const $img = $('<img>').attr({
-                src: placeholderPath,
-                alt: `no image yet`
+                src: `${targetFolder}/${placeholderIndex + 1}.jpg`,
+                alt: `${placeholderIndex + 1}.jpg`
             }).css({ width: '150px', margin: '10px', opacity: 1 });
     
-            const $caption = $('<p>').addClass('caption').html(`${group.index}.${placeholderIndex + 1} <br> no image yet`);
+            const $caption = $('<p>').addClass('caption').html(`${group.index}.${placeholderIndex + 1} <br> ${placeholderIndex + 1}.jpg`);
             
              // Upload button
              const $uploadButton = $('<button>').text('Upload').attr('data-index', placeholderIndex).on('click', function () {
@@ -391,7 +466,7 @@ $(document).ready(function () {
 
                 $fileInput.click(); // Trigger file selection dialog
             });
-
+            
             // Remove button with server sync
             const $removeButton = $('<button>').text('Remove').attr('data-index', placeholderIndex).on('click', function () {
                 const folderName = group.folderName;
