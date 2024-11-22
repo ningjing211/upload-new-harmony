@@ -4,7 +4,7 @@ $(document).ready(function () {
 
     function loadGallery() {
         $.ajax({
-            url: '/images-order',
+            url: '/api/images-order',
             method: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -55,7 +55,7 @@ $(document).ready(function () {
         const galleryData = collectGalleryData(); // 使用 collectGalleryData 函數獲取資料
     
         $.ajax({
-            url: '/update-images-order',
+            url: '/api/update-images-order',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(galleryData),
@@ -207,7 +207,7 @@ $(document).ready(function () {
                     
                     // Send updated order to server
                     $.ajax({
-                        url: '/update-images-order',
+                        url: '/api/update-images-order',
                         method: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify(updatedGalleryData),
@@ -306,7 +306,7 @@ $(document).ready(function () {
 
                     // 發送刪除請求
                     $.ajax({
-                        url: '/remove-image',
+                        url: '/api/remove-image',
                         method: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify({ folderName, imageName, imageIndex }),
@@ -349,7 +349,7 @@ $(document).ready(function () {
     function updateGroupName(oldFolderName, newFolderName) {
         console.log('folderName, newName', oldFolderName, newFolderName);
         $.ajax({
-            url: '/update-group-name',
+            url: '/api/update-group-name',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ oldFolderName, newFolderName }),
@@ -478,7 +478,7 @@ $(document).ready(function () {
 
                 // Send delete request to the server
                 $.ajax({
-                    url: '/remove-image',
+                    url: '/api/remove-image',
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ folderName, imageName, imageIndex }), // 確保這裡包含 imageIndex

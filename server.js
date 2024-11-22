@@ -11,7 +11,7 @@ const iconv = require('iconv-lite');
 
 
 // 設定靜態資源
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
@@ -71,7 +71,7 @@ const coverUpload = multer({ storage: coverStorage });
 
 
 // 在圖片上傳成功後，更新 imagesOrder.json
-app.post('/upload-cover/:folderName', coverUpload.single('coverImage'), (req, res) => {
+app.post('/api/upload-cover/:folderName', coverUpload.single('coverImage'), (req, res) => {
     const folderName = req.params.folderName;
     const filePath = path.join(__dirname, 'imagesOrder.json');
 
@@ -146,7 +146,7 @@ app.get('/images-order', (req, res) => {
 
 // 更新影片連結的 API
 
-app.post('/update-video-url', (req, res) => {
+app.post('/api/update-video-url', (req, res) => {
     const { folderName, newUrl } = req.body; // Now req.body should be defined
     const filePath = path.join(__dirname, 'imagesOrder.json');
 
@@ -175,7 +175,7 @@ app.post('/update-video-url', (req, res) => {
     });
 });
 
-app.post('/update-images-order', (req, res) => {
+app.post('/api/update-images-order', (req, res) => {
     const newImagesOrder = req.body; // 獲取前端傳送的資料
     const filePath = path.join(__dirname, 'imagesOrder.json');
 
@@ -191,7 +191,7 @@ app.post('/update-images-order', (req, res) => {
     });
 });
 
-app.post('/upload-image/:folderName/:index', upload.single('image'), async (req, res) => {
+app.post('/api/upload-image/:folderName/:index', upload.single('image'), async (req, res) => {
     const folderName = req.params.folderName;
     const index = Number(req.params.index);
     console.log(index);
@@ -245,7 +245,7 @@ app.post('/upload-image/:folderName/:index', upload.single('image'), async (req,
 });
 
 
-app.post('/reorder-images/:folderName', (req, res) => {
+app.post('/api/reorder-images/:folderName', (req, res) => {
     const folderName = req.params.folderName;
     const uploadsDir = path.join(__dirname, 'uploads', folderName);
     const imagesOrderPath = path.join(__dirname, 'imagesOrder.json');
@@ -298,9 +298,12 @@ app.post('/reorder-images/:folderName', (req, res) => {
 
 
 // Serve uploads 資料夾中的圖片
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/js', express.static(path.join(__dirname, 'public/js')));
 
-app.post('/remove-image', async (req, res) => {
+
+app.post('/api/remove-image', async (req, res) => {
     const { folderName, imageName, imageIndex } = req.body;
     console.log(req.body);
     console.log('Received remove request:', { folderName, imageName, imageIndex }); // Debug log
@@ -465,7 +468,7 @@ app.post('/remove-image', async (req, res) => {
 });
 
 // 創建資料夾 API
-app.post('/create-folder', (req, res) => {
+app.post('/api/create-folder', (req, res) => {
     const { folderName } = req.body;
     const targetFolder = path.join(__dirname, 'uploads', folderName);
     
@@ -476,8 +479,7 @@ app.post('/create-folder', (req, res) => {
 });
 
 // 複製圖片 API
-// 複製圖片 API
-app.post('/copy-image', async (req, res) => {
+app.post('/api/copy-image', async (req, res) => {
     try {
         const { folderName, newFileName } = req.body; // 確認接收到 folderName 和 newFileName
         console.log('folderName:', folderName);
@@ -500,7 +502,7 @@ app.post('/copy-image', async (req, res) => {
 });
 
 
-app.post('/update-group-name', async (req, res) => {
+app.post('/api/update-group-name', async (req, res) => {
     const { oldFolderName, newFolderName } = req.body;
 
     const imagesOrderPath = path.join(__dirname, 'imagesOrder.json');
@@ -558,35 +560,9 @@ app.post('/update-group-name', async (req, res) => {
     }
 });
 
-// async function addDescriptionFieldToImagesOrder() {
-//     const imagesOrderPath = path.join(__dirname, 'imagesOrder.json');
-
-//     try {
-//         // 讀取 imagesOrder.json
-//         const data = await fs.promises.readFile(imagesOrderPath, 'utf8');
-//         const imagesOrder = JSON.parse(data);
-
-//         // 為每個 additionalImages 添加 description 欄位
-//         imagesOrder.forEach(group => {
-//             group.additionalImages.forEach(image => {
-//                 if (!image.description) {
-//                     image.description = ""; // 默認設置為空字串
-//                 }
-//             });
-//         });
-
-//         // 寫回更新後的 imagesOrder.json
-//         await fs.promises.writeFile(imagesOrderPath, JSON.stringify(imagesOrder, null, 2), 'utf8');
-//         console.log('Description field added to additionalImages successfully.');
-//     } catch (error) {
-//         console.error('Error adding description field:', error);
-//     }
-// }
-
-// 調用函數
-// addDescriptionFieldToImagesOrder();
-
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+

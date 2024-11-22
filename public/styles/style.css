@@ -1,0 +1,84 @@
+.folder {
+    margin-bottom: 20px;
+}
+
+.imageContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.imageItem {
+    text-align: center;
+    margin: 10px;
+}
+
+.caption {
+    font-size: 14px;
+    color: #333;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.titleImageContainer {
+    display: flex;
+    justify-content: start;
+    margin-bottom: 20px;
+}
+
+.additionalImagesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.uploadSection {
+    margin-bottom: 20px;
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.imageItem {
+    text-align: center;
+}
+
+.coverDiv {
+    width: 40%;
+    margin: 0 10px 0 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.videoContainer {
+    display: flex;
+    width: 40%;
+    align-self: self-start;
+    flex-direction: column;
+}
+.videoContainer button {
+    min-width: 100px;
+}
+.videoContainer input {
+    flex: 1;
+    min-width: 100px;
+}
+
+.videoContainer iframe {
+    display: flex;
+}
+
+.inputContainer {
+    display: flex;
+    gap: 10px;
+}
+
+.uploadMoreImage {
+    text-align: center;
+    margin: 10px;
+}
