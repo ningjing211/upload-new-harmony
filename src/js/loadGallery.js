@@ -112,6 +112,7 @@ $(document).ready(function () {
             });
     
             const coverImage = group.files.find(file => file.isTitle);
+            
             if (coverImage) {
                 const $coverImageContainer = $('<div>').addClass('coverImageContainer').css({ display: 'flex', alignItems: 'center' });
     
@@ -233,6 +234,7 @@ $(document).ready(function () {
     
             // 顯示資料夾內的圖片，並且僅顯示一個 placeholder 在最後
             let lastUploadedIndex = sortedFiles.length; //目前有的照片數
+            
             console.log('test', group.additionalImages[0].index, index, lastUploadedIndex);
             for (let i = 1; i <= lastUploadedIndex; i++) {  // 更新此處條件
                 const file = sortedFiles[i - 1];

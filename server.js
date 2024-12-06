@@ -104,7 +104,7 @@ app.post('/api/upload-cover/:folderName', coverUpload.single('coverImage'), (req
 
 // API 路由：讀取 imagesOrder.json 並提供給前端
 // server.js
-app.get('/images-order', (req, res) => {
+app.get('/api/images-order', (req, res) => {
     const uploadsDir = path.join(__dirname, 'uploads');
     const imagesOrderPath = path.join(__dirname, 'imagesOrder.json');
 

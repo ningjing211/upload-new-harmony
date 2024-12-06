@@ -112,6 +112,7 @@ $(document).ready(function () {
             });
     
             const coverImage = group.files.find(file => file.isTitle);
+            console.log('xxxxxxxxxxxxx', coverImage);
             if (coverImage) {
                 const $coverImageContainer = $('<div>').addClass('coverImageContainer').css({ display: 'flex', alignItems: 'center' });
     
